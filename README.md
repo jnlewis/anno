@@ -17,14 +17,14 @@ In short, Anno provides an abstraction to the processes of ticket reservations a
 *	The API layer is developed in Microsoft ASP.NET Web API 2.
 
 ## Official Website & Live Product Preview
-[http://anno.network](http://anno.network)
-[http://anno.network/preview](http://anno.network/preview)
+[http://anno.network](http://anno.network){:target="_blank"}
+[http://anno.network/preview](http://anno.network/preview){:target="_blank"}
 
 ## API
-For the complete API documentation, please see [Anno API Documentation](https://documenter.getpostman.com/view/469639/anno-api/RVfyDW5V).
+For the complete API documentation, please see [Anno API Documentation](https://documenter.getpostman.com/view/469639/anno-api/RVfyDW5V){:target="_blank"}.
 
 ## NEO City of Zion Contest:
-Please view the [dApp Usage Guide](http://anno.network/docs/dapp-usage-guide.pdf) for smart contract invocation details.
+Please view the [dApp Usage Guide](http://anno.network/docs/dapp-usage-guide.pdf){:target="_blank"} for smart contract invocation details.
 
 
 ## Off-Chain Database
