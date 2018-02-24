@@ -2,11 +2,11 @@
 Decentralized Ticket Reservation Platform Built on the NEO Blockchain.
 
 ## Introduction
-Anno is a decentralized reservation management platform with the aim to improve the integrity of online ticket reservations by providing an easy solution for businesses to utilize the programmable logic and immutability of smart contracts on the NEO blockchain.
+Anno is a decentralized reservation platform with the aim to improve the integrity of online ticket reservations by providing an easy solution for businesses to utilize the programmable logic and immutability of smart contracts on the NEO blockchain.
 
 Businesses can integrate their existing web and mobile apps with Anno to immediately enable graceful handling of sales, ticket verification, cancellations, refunds, and direct payments from customers without a payment provider.
 
-Target users are businesses and organizations that provide reservation facility to their user base – which includes event organizers, hotels, cinemas, airlines, transportation companies, tour agencies, theme parks, restaurants and daily deals sites.
+Target users are companies and organizations that provide reservation facility to their user base – which includes event organizers, hotels, cinemas, airlines, transportation companies, tour agencies, theme parks, restaurants and daily deals sites.
 
 In short, Anno provides an abstraction to the processes of ticket reservations and verifications.
 
