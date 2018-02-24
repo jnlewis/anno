@@ -15,6 +15,7 @@ In short, Anno provides an abstraction to the processes of ticket reservations a
 
 ## Technologies
 *	The API layer is developed in Microsoft ASP.NET Web API 2.
+* The blockchain in use is NEO.
 
 ## Official Website & Live Product Preview
 <a href="http://anno.network" target="_blank">http://anno.network</a><br />
@@ -29,7 +30,7 @@ Please view the <a href="http://anno.network/docs/dapp-usage-guide.pdf" target="
 
 ## Off-Chain Database
 Anno commits transactions to the NEO blockchain, but is also backed by a custom built off-chain database. The purpose of the database is to support instant querying of large datasets at no cost. This is to enable the platform’s data analytics feature. Although the off-chain database is centralized by nature, it is our design goal to ensure that it can be rebuilt entirely from the decentralized data stored on the blockchain.
-For the proof-of-concept stage, the off-chain database is built on MySQL. For scalability reasons, we have plans to replace MySQL with NoSQL DB like Mongo.
+For the proof-of-concept stage, the off-chain database is built on MySQL. For scalability reasons, we have plans move to MongoDB (NoSQL).
 
 ## General Process Overview
 *	All interactions on Anno are completed through the Anno API by using an API Key unique to each user of the platform. The user should already have a platform (such as web or mobile app) which will integrate with Anno via HTTP requests.
