@@ -27,6 +27,8 @@ For the complete API documentation, please see <a href="https://documenter.getpo
 ## NEO City of Zion Contest:
 Please view the <a href="http://anno.network/docs/dapp-usage-guide.pdf" target="_blank">dApp Usage Guide</a> for smart contract invocation details.
 
+## Why Use a Blockchain?
+The use of a blockchain enables direct payments from clients thus eliminating the need for a payment gateway, while also providing resilience to common failures found on centralized systems such as data loss or overselling. All bookings are safely recorded, and refunds are certain and processed with no delays. The blockchain can also prevent overselling, and with the availability of NEO global identity, can prevent tickets reselling where resellers buy a bulk of tickets (commonly in concerts) and resells for a higher price.
 
 ## Off-Chain Database
 Anno commits transactions to the NEO blockchain, but is also backed by a custom built off-chain database. The purpose of the database is to support instant querying of large datasets at no cost. This is to enable the platform’s data analytics feature. Although the off-chain database is centralized by nature, it is our design goal to ensure that it can be rebuilt entirely from the decentralized data stored on the blockchain.
