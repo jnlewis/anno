@@ -37,7 +37,7 @@ For the proof-of-concept stage, the off-chain database is built on MySQL. For sc
 *	The three main entities on the platform are Host, Event, and Customer – each of which has their own account address on the blockchain with an active balance of Anno Tokens.
 *	When a user signs up on Anno, their profile is created as a host, where they can create events (services or products) and add customers who will buy tickets to their events. An API Key will be granted to the user for accessing the platform.
 *	Events created by the host can be configured to have multiple option tiers with different pricing structure.
-*	When making a reservation on an event, the host will invoke Anno API to indicate that a particular customer intends to book an event. Anno then verify the reservation ticket, and transfer funds from the customer account to the event account. A booking confirmation and ticket numbers are generated for the user.
+*	When making a reservation on an event, the host will invoke Anno API to indicate that a particular customer intends to book an event. Anno then verify the booking, and transfer funds from the customer account to the event account. A booking confirmation and ticket numbers are generated for the user.
 *	Funds in event account are kept until the event has started, after which these funds can be claimed by the host (user) of that event. The event account guarantees customer refunds upon cancellation.
 *	If the host cancels an event before the event has started, all funds in that event account will be returned to the customers.
 *	If a ticket is cancelled before the event has started, the paid price for that ticket is returned to the customer.
