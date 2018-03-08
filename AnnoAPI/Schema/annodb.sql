@@ -31,7 +31,7 @@ CREATE TABLE `api_keys` (
   `record_status` varchar(15) DEFAULT NULL,
   `created_date` datetime DEFAULT NULL,
   PRIMARY KEY (`key_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -59,7 +59,7 @@ CREATE TABLE `customer` (
   `created_date` datetime DEFAULT NULL,
   PRIMARY KEY (`customer_id`),
   UNIQUE KEY `unique_index` (`host_id`,`ref_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -86,7 +86,7 @@ CREATE TABLE `customer_booking` (
   `record_status` varchar(15) DEFAULT NULL,
   `created_date` datetime DEFAULT NULL,
   PRIMARY KEY (`booking_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -119,7 +119,7 @@ CREATE TABLE `customer_ticket` (
   `record_status` varchar(15) DEFAULT NULL,
   `created_date` datetime DEFAULT NULL,
   PRIMARY KEY (`ticket_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -151,7 +151,7 @@ CREATE TABLE `events` (
   `created_date` datetime DEFAULT NULL,
   PRIMARY KEY (`event_id`),
   UNIQUE KEY `unique_index` (`host_id`,`ref_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -186,7 +186,7 @@ CREATE TABLE `events_tier` (
   `created_date` datetime DEFAULT NULL,
   PRIMARY KEY (`tier_id`),
   UNIQUE KEY `unique_index` (`host_id`,`ref_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -212,7 +212,7 @@ CREATE TABLE `host` (
   `record_status` varchar(15) DEFAULT NULL,
   `created_date` datetime DEFAULT NULL,
   PRIMARY KEY (`host_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -233,15 +233,15 @@ DROP TABLE IF EXISTS `transactions`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `transactions` (
   `transaction_id` int(11) NOT NULL AUTO_INCREMENT,
-  `transaction_datetime` varchar(45) DEFAULT NULL,
-  `address_from` varchar(100) DEFAULT NULL,
-  `address_to` varchar(100) DEFAULT NULL,
+  `transaction_datetime` datetime DEFAULT NULL,
+  `address_from` varchar(40) DEFAULT NULL,
+  `address_to` varchar(40) DEFAULT NULL,
   `amount` decimal(10,0) DEFAULT NULL,
   `booking_id` int(11) DEFAULT NULL,
   `description` varchar(30) DEFAULT NULL,
   `created_date` datetime DEFAULT NULL,
   PRIMARY KEY (`transaction_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -264,12 +264,12 @@ CREATE TABLE `wallet` (
   `wallet_id` int(11) NOT NULL AUTO_INCREMENT,
   `owner_id` int(11) DEFAULT NULL,
   `owner_type` varchar(10) DEFAULT NULL,
-  `address` varchar(100) DEFAULT NULL,
+  `address` varchar(40) DEFAULT NULL,
   `balance` int(11) DEFAULT NULL,
   `record_status` varchar(15) DEFAULT NULL,
   `created_date` datetime DEFAULT NULL,
   PRIMARY KEY (`wallet_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -290,4 +290,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-22 20:27:04
+-- Dump completed on 2018-03-08 22:35:34
