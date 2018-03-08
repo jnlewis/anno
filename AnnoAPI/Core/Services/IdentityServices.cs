@@ -1,9 +1,7 @@
-﻿using AnnoAPI.Core.Contract;
-using AnnoAPI.Core.Enum;
+﻿using Anno.Models.Entities;
+using AnnoAPI.Core.Const;
 using AnnoAPI.Core.Utility;
-using AnnoAPI.Models;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
@@ -11,7 +9,9 @@ namespace AnnoAPI.Core.Services
 {
     public class IdentityServices
     {
-        MySqlUtility databaseAnno = null;
+        public IdentityServices()
+        {
+        }
 
         public static class RefIdTypes
         {
@@ -29,49 +29,47 @@ namespace AnnoAPI.Core.Services
             public static string Ticket = "Ticket";
         }
 
-        public IdentityServices()
-        {
-            this.databaseAnno = new MySqlUtility(Config.ConnectionString_Anno);
-        }
-        
         public bool IsRefIdExists(string refIdType, long hostId, string refId)
         {
-            if (refIdType == RefIdTypes.Customer)
+            using (var context = new AnnoDBContext())
             {
-                string sql = @"SELECT ref_id FROM customer WHERE record_status=@recordStatus AND host_id=@hostId AND ref_id=@refId";
-                sql = sql
-                    .Replace("@hostId", DataUtility.ToMySqlParam(hostId))
-                    .Replace("@refId", DataUtility.ToMySqlParam(refId))
-                    .Replace("@recordStatus", DataUtility.ToMySqlParam(RecordStatuses.Live));
+                if (refIdType == RefIdTypes.Customer)
+                {
+                    var data = (from a in context.Customer
+                               where a.record_status == RecordStatuses.Live
+                               && a.host_id == hostId
+                               && a.ref_id == refId
+                               select a.ref_id)
+                               .FirstOrDefault();
 
-                DataTable dt = this.databaseAnno.ExecuteAsDataTable(sql);
-                return DataUtility.HasRecord(dt);
-            }
-            else if (refIdType == RefIdTypes.Event)
-            {
-                string sql = @"SELECT ref_id FROM events WHERE record_status=@recordStatus AND host_id=@hostId AND ref_id=@refId";
-                sql = sql
-                    .Replace("@hostId", DataUtility.ToMySqlParam(hostId))
-                    .Replace("@refId", DataUtility.ToMySqlParam(refId))
-                    .Replace("@recordStatus", DataUtility.ToMySqlParam(RecordStatuses.Live));
+                    return (data != null);
+                }
+                else if (refIdType == RefIdTypes.Event)
+                {
+                    var data = (from a in context.Events
+                                where a.record_status == RecordStatuses.Live
+                                && a.host_id == hostId
+                                && a.ref_id == refId
+                                select a.ref_id)
+                               .FirstOrDefault();
 
-                DataTable dt = this.databaseAnno.ExecuteAsDataTable(sql);
-                return DataUtility.HasRecord(dt);
-            }
-            else if (refIdType == RefIdTypes.EventTier)
-            {
-                string sql = @"SELECT ref_id FROM events_tier WHERE record_status=@recordStatus AND host_id=@hostId AND ref_id=@refId";
-                sql = sql
-                    .Replace("@hostId", DataUtility.ToMySqlParam(hostId))
-                    .Replace("@refId", DataUtility.ToMySqlParam(refId))
-                    .Replace("@recordStatus", DataUtility.ToMySqlParam(RecordStatuses.Live));
+                    return (data != null);
+                }
+                else if (refIdType == RefIdTypes.EventTier)
+                {
+                    var data = (from a in context.EventsTier
+                                where a.record_status == RecordStatuses.Live
+                                && a.host_id == hostId
+                                && a.ref_id == refId
+                                select a.ref_id)
+                               .FirstOrDefault();
 
-                DataTable dt = this.databaseAnno.ExecuteAsDataTable(sql);
-                return DataUtility.HasRecord(dt);
-            }
-            else
-            {
-                throw new Exception("Unrecognized reference ID type: " + refIdType);
+                    return (data != null);
+                }
+                else
+                {
+                    throw new ArgumentException("Unrecognized reference ID type", refIdType);
+                }
             }
         }
         
@@ -79,54 +77,42 @@ namespace AnnoAPI.Core.Services
         {
             string result = null;
 
-            if (addressType == AddressTypes.Host)
+            using (var context = new AnnoDBContext())
             {
-                string sql = @"SELECT address FROM host WHERE host_id=@id";
-                sql = sql.Replace("@id", DataUtility.ToMySqlParam(id));
-
-                DataTable dt = this.databaseAnno.ExecuteAsDataTable(sql);
-                if (DataUtility.HasRecord(dt))
-                    result = dt.Rows[0]["address"].ToString();
-            }
-            else if (addressType == AddressTypes.Customer)
-            {
-                string sql = @"SELECT address FROM customer WHERE customer_id=@id";
-                sql = sql.Replace("@id", DataUtility.ToMySqlParam(id));
-
-                DataTable dt = this.databaseAnno.ExecuteAsDataTable(sql);
-                if (DataUtility.HasRecord(dt))
-                    result = dt.Rows[0]["address"].ToString();
-            }
-            else if (addressType == AddressTypes.Event)
-            {
-                string sql = @"SELECT address FROM events WHERE event_id=@id";
-                sql = sql.Replace("@id", DataUtility.ToMySqlParam(id));
-
-                DataTable dt = this.databaseAnno.ExecuteAsDataTable(sql);
-                if (DataUtility.HasRecord(dt))
-                    result = dt.Rows[0]["address"].ToString();
-            }
-            else if (addressType == AddressTypes.EventTier)
-            {
-                string sql = @"SELECT address FROM events_tier WHERE tier_id=@id";
-                sql = sql.Replace("@id", DataUtility.ToMySqlParam(id));
-
-                DataTable dt = this.databaseAnno.ExecuteAsDataTable(sql);
-                if (DataUtility.HasRecord(dt))
-                    result = dt.Rows[0]["address"].ToString();
-            }
-            else if (addressType == AddressTypes.Ticket)
-            {
-                string sql = @"SELECT address FROM customer_ticket WHERE ticket_id=@id";
-                sql = sql.Replace("@id", DataUtility.ToMySqlParam(id));
-
-                DataTable dt = this.databaseAnno.ExecuteAsDataTable(sql);
-                if (DataUtility.HasRecord(dt))
-                    result = dt.Rows[0]["address"].ToString();
-            }
-            else
-            {
-                throw new Exception("Unrecognized address type: " + addressType);
+                if (addressType == AddressTypes.Host)
+                {
+                    var data = context.Host.Where(x => x.host_id == id).FirstOrDefault();
+                    if (data != null)
+                        result = data.address;
+                }
+                else if (addressType == AddressTypes.Customer)
+                {
+                    var data = context.Customer.Where(x => x.customer_id == id).FirstOrDefault();
+                    if (data != null)
+                        result = data.address;
+                }
+                else if (addressType == AddressTypes.Event)
+                {
+                    var data = context.Events.Where(x => x.event_id == id).FirstOrDefault();
+                    if (data != null)
+                        result = data.address;
+                }
+                else if (addressType == AddressTypes.EventTier)
+                {
+                    var data = context.EventsTier.Where(x => x.tier_id == id).FirstOrDefault();
+                    if (data != null)
+                        result = data.address;
+                }
+                else if (addressType == AddressTypes.Ticket)
+                {
+                    var data = context.CustomerTicket.Where(x => x.ticket_id == id).FirstOrDefault();
+                    if (data != null)
+                        result = data.address;
+                }
+                else
+                {
+                    throw new ArgumentException("Unrecognized address type", addressType);
+                }
             }
 
             return result;

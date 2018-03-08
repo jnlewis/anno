@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using System.Web.Http;
-using AnnoAPI.Core.Enum;
 using AnnoAPI.Core;
+using AnnoAPI.Core.Const;
 
 namespace AnnoAPI.Controllers
 {

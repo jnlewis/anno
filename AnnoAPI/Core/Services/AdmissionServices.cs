@@ -1,5 +1,6 @@
-﻿using AnnoAPI.Core.Contract;
-using AnnoAPI.Core.Enum;
+﻿using Anno.Models.Entities;
+using AnnoAPI.Core.Const;
+using AnnoAPI.Core.Contract;
 using AnnoAPI.Core.Utility;
 using AnnoAPI.Models;
 using System;
@@ -11,11 +12,8 @@ namespace AnnoAPI.Core.Services
 {
     public class AdmissionServices
     {
-        MySqlUtility databaseAnno = null;
-
         public AdmissionServices()
         {
-            this.databaseAnno = new MySqlUtility(Config.ConnectionString_Anno);
         }
 
         public RedeemTicketReponse UseTicket(long hostId, string ticketNo, out string status)
@@ -60,106 +58,84 @@ namespace AnnoAPI.Core.Services
             return result;
         }
 
-        public Ticket GetTicketByTicketNo(long hostId, string ticketNo)
+        public TicketInfo GetTicketByTicketNo(long hostId, string ticketNo)
         {
-            Ticket result = null;
-
-            string sql = @"SELECT b.booking_id, tic.ticket_id, tic.ticket_number, tic.seat_number, tic.status, tic.paid_price, tic.address as ticket_address,
-                                b.confirmation_number, e.title as event_title, e.ref_id as event_ref, u.ref_id as customer_ref, t.title as tier_title, t.ref_id as tier_ref 
-                                FROM customer_ticket tic
-                                INNER JOIN customer_booking b ON (b.booking_id = tic.booking_id)
-                                INNER JOIN events e ON (e.event_id = b.event_id)
-                                INNER JOIN events_tier t ON (t.event_id = e.event_id AND tic.tier_id = t.tier_id)
-                                INNER JOIN customer u ON (u.customer_id = b.customer_id)
-                                WHERE b.record_status='Live'
-                                AND e.record_status='Live'
-                                AND tic.record_status='Live'
-                                AND e.host_id=@hostId  
-                                AND tic.ticket_number=@ticketNo";
-
-            sql = sql
-                .Replace("@hostId ", DataUtility.ToMySqlParam(hostId))
-                .Replace("@ticketNo", DataUtility.ToMySqlParam(ticketNo));
-
-            DataTable dt = databaseAnno.ExecuteAsDataTable(sql);
-            if (DataUtility.HasRecord(dt))
+            using(var context = new AnnoDBContext())
             {
-                DataRow row = dt.Rows[0];
+                var data = (from tic in context.CustomerTicket
+                            join b in context.CustomerBooking on tic.booking_id equals b.booking_id
+                            join e in context.Events on b.event_id equals e.event_id
+                            join t in context.EventsTier on new { Key1 = e.event_id, Key2 = tic.tier_id } equals new { Key1 = t.event_id, Key2 = t.tier_id }
+                            join u in context.Customer on b.customer_id equals u.customer_id
+                            where b.record_status == RecordStatuses.Live
+                            && e.record_status == RecordStatuses.Live
+                            && tic.record_status == RecordStatuses.Live
+                            && e.host_id == hostId
+                            && tic.ticket_number == ticketNo
+                            select new TicketInfo
+                            {
+                                BookingId = b.booking_id,
+                                TicketId = tic.ticket_id,
+                                CustomerReferenceId = u.ref_id,
+                                EventReferenceId = e.ref_id,
+                                TierReferenceId = t.ref_id, 
+                                EventTitle = e.title,
+                                TierTitle = t.title, 
+                                TicketNo = tic.ticket_number, 
+                                BookingConfirmationNo = b.confirmation_number, 
+                                Status = tic.status,
+                                PaidPrice = tic.paid_price,
+                                TicketAddress = tic.address
+                            }).FirstOrDefault();
 
-                result = new Ticket()
-                {
-                    BookingId = ConvertUtility.ToInt64(row["booking_id"]),
-                    TicketId = ConvertUtility.ToInt64(row["ticket_id"]),
-                    CustomerReferenceId = ConvertUtility.ToString(row["customer_ref"]),
-                    EventReferenceId = ConvertUtility.ToString(row["event_ref"]),
-                    TierReferenceId = ConvertUtility.ToString(row["tier_ref"]),
-                    EventTitle = ConvertUtility.ToString(row["event_title"]),
-                    TierTitle = ConvertUtility.ToString(row["tier_title"]),
-                    TicketNo = ConvertUtility.ToString(row["ticket_number"]),
-                    BookingConfirmationNo = ConvertUtility.ToString(row["confirmation_number"]),
-                    Status = ConvertUtility.ToString(row["status"]),
-                    PaidPrice = ConvertUtility.ToInt64(row["paid_price"]),
-                    TicketAddress = ConvertUtility.ToString(row["ticket_address"])
-                };
+                return data;
             }
-
-            return result;
         }
 
-        public Ticket GetTicketById(long ticketId)
+        public TicketInfo GetTicketById(long ticketId)
         {
-            Ticket result = null;
-
-            string sql = @"SELECT tic.ticket_id, tic.ticket_number, tic.seat_number, tic.status, tic.paid_price, tic.address as ticket_address,
-                                b.booking_id, b.confirmation_number, e.title as event_title, e.ref_id as event_ref, u.ref_id as customer_ref, t.title as tier_title, t.ref_id as tier_ref 
-                                FROM customer_ticket tic
-                                INNER JOIN customer_booking b ON (b.booking_id = tic.booking_id)
-                                INNER JOIN events e ON (e.event_id = b.event_id)
-                                INNER JOIN events_tier t ON (t.event_id = e.event_id AND tic.tier_id = t.tier_id)
-                                INNER JOIN customer u ON (u.customer_id = b.customer_id)
-                                WHERE b.record_status=@recordStatus
-                                AND e.record_status=@recordStatus
-                                AND tic.record_status=@recordStatus
-                                AND tic.ticket_id=@ticketId";
-
-            sql = sql
-                .Replace("@recordStatus", DataUtility.ToMySqlParam(RecordStatuses.Live))
-                .Replace("@ticketId", DataUtility.ToMySqlParam(ticketId));
-
-            DataTable dt = databaseAnno.ExecuteAsDataTable(sql);
-            if (DataUtility.HasRecord(dt))
+            using (var context = new AnnoDBContext())
             {
-                DataRow row = dt.Rows[0];
+                var data = (from tic in context.CustomerTicket
+                            join b in context.CustomerBooking on tic.booking_id equals b.booking_id
+                            join e in context.Events on b.event_id equals e.event_id
+                            join t in context.EventsTier on new { Key1 = e.event_id, Key2 = tic.tier_id } equals new { Key1 = t.event_id, Key2 = t.tier_id }
+                            join u in context.Customer on b.customer_id equals u.customer_id
+                            where b.record_status == RecordStatuses.Live
+                            && e.record_status == RecordStatuses.Live
+                            && tic.record_status == RecordStatuses.Live
+                            && tic.ticket_id == ticketId
+                            select new TicketInfo
+                            {
+                                BookingId = b.booking_id,
+                                TicketId = tic.ticket_id,
+                                CustomerReferenceId = u.ref_id,
+                                EventReferenceId = e.ref_id,
+                                TierReferenceId = t.ref_id,
+                                EventTitle = e.title,
+                                TierTitle = t.title,
+                                TicketNo = tic.ticket_number,
+                                BookingConfirmationNo = b.confirmation_number,
+                                Status = tic.status,
+                                PaidPrice = tic.paid_price,
+                                TicketAddress = tic.address
+                            }).FirstOrDefault();
 
-                result = new Ticket()
-                {
-                    TicketId = ConvertUtility.ToInt64(row["ticket_id"]),
-                    BookingId = ConvertUtility.ToInt64(row["booking_id"]),
-                    CustomerReferenceId = ConvertUtility.ToString(row["customer_ref"]),
-                    EventReferenceId = ConvertUtility.ToString(row["event_ref"]),
-                    TierReferenceId = ConvertUtility.ToString(row["tier_ref"]),
-                    EventTitle = ConvertUtility.ToString(row["event_title"]),
-                    TierTitle = ConvertUtility.ToString(row["tier_title"]),
-                    TicketNo = ConvertUtility.ToString(row["ticket_number"]),
-                    BookingConfirmationNo = ConvertUtility.ToString(row["confirmation_number"]),
-                    Status = ConvertUtility.ToString(row["status"]),
-                    PaidPrice = ConvertUtility.ToInt64(row["paid_price"]),
-                    TicketAddress = ConvertUtility.ToString(row["ticket_address"])
-                };
+                return data;
             }
-
-            return result;
         }
-        
+
         public void UpdateTicketStatus(long ticketId, string status)
         {
-            string sql = @"UPDATE customer_ticket SET status=@status WHERE ticket_id=@ticketId";
-
-            sql = sql.Replace("@status", DataUtility.ToMySqlParam(status))
-                    .Replace("@ticketId", DataUtility.ToMySqlParam(ticketId));
-
-            this.databaseAnno.Execute(sql);
+            using (var context = new AnnoDBContext())
+            {
+                var record = context.CustomerTicket.SingleOrDefault(x => x.ticket_id == ticketId);
+                if (record != null)
+                {
+                    record.status = status;
+                    context.SaveChanges();
+                }
+            }
         }
-        
     }
 }

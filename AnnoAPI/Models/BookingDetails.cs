@@ -8,6 +8,6 @@ namespace AnnoAPI.Models
         public string UserReferenceId { get; set; }
         public string EventReferenceId { get; set; }
         public string ConfirmationNumber { get; set; }
-        public List<Ticket> Tickets { get; set; }
+        public List<TicketInfo> Tickets { get; set; }
     }
 }
