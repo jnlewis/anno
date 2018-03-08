@@ -7,6 +7,6 @@ namespace AnnoAPI.Models
         public long? HostId { get; set; }
         public string Name { get; set; }
         public string WalletAddress { get; set; }
-        public long? WalletBalance { get; set; }
+        public decimal? WalletBalance { get; set; }
     }
 }

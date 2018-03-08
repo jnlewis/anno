@@ -1,20 +1,19 @@
-﻿using AnnoAPI.Core.Contract;
-using AnnoAPI.Core.Enum;
+﻿using Anno.Models.Entities;
+using AnnoAPI.Core.Const;
+using AnnoAPI.Core.Contract;
 using AnnoAPI.Core.Utility;
 using AnnoAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 
 namespace AnnoAPI.Core.Services
 {
     public class EventsServices
     {
-        MySqlUtility databaseAnno = null;
-
         public EventsServices()
         {
-            this.databaseAnno = new MySqlUtility(Config.ConnectionString_Anno);
         }
 
         /// <summary>
@@ -23,62 +22,69 @@ namespace AnnoAPI.Core.Services
         public void CreateEvent(long hostId, CreateEventsRequest value)
         {
             long newEventId = 0;
-            long newTierId = 0;
             List<string> tierAddresses = new List<string>();
 
             //Generate address
             string eventAddress = HashUtility.GenerateHash();
 
-            //Insert event to database
-            string sql = @"INSERT INTO events (host_id, ref_id, title, description, start_date, status, address, record_status, created_date) 
-                            VALUES (@host_id, @ref_id, @title, @description, @start_date, @status, @address, @record_status, @created_date)";
-
-            sql = sql.Replace("@host_id", DataUtility.ToMySqlParam(hostId))
-                    .Replace("@ref_id", DataUtility.ToMySqlParam(value.ReferenceId))
-                    .Replace("@title", DataUtility.ToMySqlParam(value.Title))
-                    .Replace("@description", DataUtility.ToMySqlParam(value.Description))
-                    .Replace("@start_date", DataUtility.ToMySqlParam(value.StartDate))
-                    .Replace("@status", DataUtility.ToMySqlParam("Active"))
-                    .Replace("@address", DataUtility.ToMySqlParam(eventAddress))
-                    .Replace("@record_status", DataUtility.ToMySqlParam(RecordStatuses.Pending))
-                    .Replace("@created_date", DataUtility.ToMySqlParam(DateTime.UtcNow));
-
-            this.databaseAnno.Execute(sql, out newEventId);
-
-            //Insert event tiers to database
-            foreach (var tier in value.Tiers)
+            using (var context = new AnnoDBContext())
             {
-                //Generate address
-                string tierAddress = HashUtility.GenerateHash();
+                //Insert event to database
+                var newEvent = new Events()
+                {
+                    host_id = hostId,
+                    ref_id = value.ReferenceId,
+                    title = value.Title,
+                    description = value.Description,
+                    start_date = value.StartDate,
+                    status = "Active",
+                    address = eventAddress,
+                    record_status = RecordStatuses.Pending,
+                    created_date = DateTime.UtcNow
+                };
+                context.Events.Add(newEvent);
+                context.SaveChanges();
 
-                sql = @"INSERT INTO events_tier (host_id, event_id, ref_id, title, description, total_tickets, available_tickets, price, status, address, record_status, created_date) 
-                            VALUES (@host_id, @event_id, @ref_id, @title, @description, @total_tickets, @available_tickets, @price, @status, @address, @record_status, @created_date)";
+                //Get the ID of the newly created record
+                newEventId = newEvent.event_id;
 
-                sql = sql.Replace("@host_id", DataUtility.ToMySqlParam(hostId))
-                        .Replace("@event_id", DataUtility.ToMySqlParam(newEventId))
-                        .Replace("@ref_id", DataUtility.ToMySqlParam(tier.ReferenceId))
-                        .Replace("@title", DataUtility.ToMySqlParam(tier.Title))
-                        .Replace("@description", DataUtility.ToMySqlParam(tier.Description))
-                        .Replace("@total_tickets", DataUtility.ToMySqlParam(tier.TotalTickets))
-                        .Replace("@available_tickets", DataUtility.ToMySqlParam(tier.TotalTickets)) //available tickets is set to total tickets for initial insert
-                        .Replace("@price", DataUtility.ToMySqlParam(tier.Price))
-                        .Replace("@status", DataUtility.ToMySqlParam("Active"))
-                        .Replace("@address", DataUtility.ToMySqlParam(tierAddress))
-                        .Replace("@record_status", DataUtility.ToMySqlParam(RecordStatuses.Live))
-                        .Replace("@created_date", DataUtility.ToMySqlParam(DateTime.UtcNow));
+                //Insert event tiers to database
+                foreach (var tier in value.Tiers)
+                {
+                    //Generate address
+                    string tierAddress = HashUtility.GenerateHash();
 
-                this.databaseAnno.Execute(sql, out newTierId);
+                    //Insert event to database
+                    var newEventTier = new EventsTier()
+                    {
+                        host_id = hostId,
+                        event_id = newEventId,
+                        ref_id = tier.ReferenceId,
+                        title = tier.Title,
+                        description = tier.Description,
+                        total_tickets = tier.TotalTickets,
+                        available_tickets = tier.TotalTickets, //available tickets is set to total tickets for initial insert
+                        price = Convert.ToDecimal(tier.Price),
+                        status = "Active",
+                        address = tierAddress,
+                        record_status = RecordStatuses.Live,
+                        created_date = DateTime.UtcNow
+                    };
+                    context.EventsTier.Add(newEventTier);
+                    context.SaveChanges();
 
-                tierAddresses.Add(tierAddress);
+                    tierAddresses.Add(tierAddress);
+                }
+
+                //Update event record status to live
+                var record = context.Events.SingleOrDefault(x => x.event_id == newEventId);
+                if (record != null)
+                {
+                    record.record_status = RecordStatuses.Live;
+                    context.SaveChanges();
+                }
             }
-
-            //Update event record status to live
-            sql = @"UPDATE events SET record_status=@record_status WHERE event_id=@event_id";
-            sql = sql.Replace("@event_id", DataUtility.ToMySqlParam(newEventId))
-                    .Replace("@record_status", DataUtility.ToMySqlParam(RecordStatuses.Live));
-
-            this.databaseAnno.Execute(sql);
-
+            
             //Create event wallet
             WalletServices walletServices = new WalletServices();
             walletServices.CreateWallet(newEventId, WalletOwnerTypes.Event, eventAddress);
@@ -100,21 +106,25 @@ namespace AnnoAPI.Core.Services
 
         public void UpdateEventStatus(long hostId, UpdateEventStatusRequest value)
         {
-            //update database
-            string sql = @"UPDATE events SET status=@status WHERE ref_id=@ref_id AND record_status=@record_status";
-
-            sql = sql.Replace("@status", DataUtility.ToMySqlParam(value.NewStatus))
-                    .Replace("@ref_id", DataUtility.ToMySqlParam(value.ReferenceId))
-                    .Replace("@record_status", DataUtility.ToMySqlParam(RecordStatuses.Live));
-
-            this.databaseAnno.Execute(sql);
+            using (var context = new AnnoDBContext())
+            {
+                var record = context.Events.SingleOrDefault(x => 
+                                x.host_id == hostId && 
+                                x.ref_id == value.ReferenceId && 
+                                x.record_status == RecordStatuses.Live);
+                if (record != null)
+                {
+                    record.status = value.NewStatus;
+                    context.SaveChanges();
+                }
+            }
         }
 
         public string CancelEvent(long hostId, CancelEventRequest value)
         {
             //Validate if event
             EventsServices eventsServices = new EventsServices();
-            Event eventInfo = eventsServices.GetEventByRef(hostId, value.ReferenceId);
+            EventInfo eventInfo = eventsServices.GetEventByRef(hostId, value.ReferenceId);
             if (eventInfo == null)
             {
                 return CancelEventStatuses.EventNotFound;
@@ -217,160 +227,111 @@ namespace AnnoAPI.Core.Services
             return result;
         }
 
-        public List<Event> GetEvents(long hostId)
+        public List<EventInfo> GetEvents(long hostId)
         {
-            List<Event> result = null;
-            
-            string sql = @"SELECT e.event_id, e.ref_id, e.title, e.description, e.status, e.start_date, e.address as event_address, w.address, w.balance
-                                FROM events e
-                                INNER JOIN wallet w ON (w.owner_id=e.event_id AND w.owner_type=@ownerType)
-                                WHERE e.record_status=@recordStatus
-                                AND w.record_status=@recordStatus
-                                AND e.host_id=@hostId ";
-
-            sql = sql.Replace("@recordStatus", DataUtility.ToMySqlParam(RecordStatuses.Live))
-                    .Replace("@ownerType", DataUtility.ToMySqlParam(WalletOwnerTypes.Event))
-                    .Replace("@hostId ", DataUtility.ToMySqlParam(hostId));
-
-            DataTable dt = databaseAnno.ExecuteAsDataTable(sql);
-            if (DataUtility.HasRecord(dt))
+            using (var context = new AnnoDBContext())
             {
-                result = new List<Event>();
+                var data = (from e in context.Events
+                            join w in context.Wallet on e.event_id equals w.owner_id
+                            where w.owner_type == WalletOwnerTypes.Event
+                            && e.record_status == RecordStatuses.Live
+                            && w.record_status == RecordStatuses.Live
+                            && e.host_id == hostId
+                            select new EventInfo()
+                            {
+                                EventId = e.event_id,
+                                ReferenceId = e.ref_id,
+                                Title = e.title,
+                                Description = e.description,
+                                Status = e.status,
+                                StartDate = e.start_date,
+                                EventAddress = e.address,
+                                WalletAddress = w.address,
+                                WalletBalance = w.balance
+                            }).ToList();
 
-                foreach (DataRow row in dt.Rows)
-                {
-                    result.Add(new Event()
-                    {
-                        EventId = ConvertUtility.ToInt64(row["event_id"]),
-                        ReferenceId = ConvertUtility.ToString(row["ref_id"]),
-                        Title = ConvertUtility.ToString(row["title"]),
-                        Description = ConvertUtility.ToString(row["description"]),
-                        Status = ConvertUtility.ToString(row["status"]),
-                        StartDate = ConvertUtility.ToDateTime(row["start_date"]),
-                        EventAddress = ConvertUtility.ToString(row["event_address"]),
-                        WalletAddress = ConvertUtility.ToString(row["address"]),
-                        WalletBalance = ConvertUtility.ToInt64(row["balance"])
-                    });
-                }
+                return data;
             }
-
-            return result;
         }
 
-        public Event GetEventByRef(long hostId, string refId)
+        public EventInfo GetEventByRef(long hostId, string refId)
         {
-            Event result = null;
-
-            string sql = @"SELECT e.event_id, e.ref_id, e.title, e.description, e.status, e.start_date, e.address as event_address, w.address, w.balance
-                                FROM events e
-                                INNER JOIN wallet w ON (w.owner_id=e.event_id AND w.owner_type=@ownerType)
-                                WHERE e.record_status=@recordStatus
-                                AND w.record_status=@recordStatus
-                                AND e.host_id=@hostId 
-                                AND e.ref_id=@refId";
-
-            sql = sql
-                .Replace("@ownerType", DataUtility.ToMySqlParam(WalletOwnerTypes.Event))
-                .Replace("@recordStatus", DataUtility.ToMySqlParam(RecordStatuses.Live))
-                .Replace("@hostId ", DataUtility.ToMySqlParam(hostId))
-                .Replace("@refId", DataUtility.ToMySqlParam(refId));
-
-            DataTable dt = databaseAnno.ExecuteAsDataTable(sql);
-            if (DataUtility.HasRecord(dt))
+            using (var context = new AnnoDBContext())
             {
-                DataRow row = dt.Rows[0];
+                var data = (from e in context.Events
+                            join w in context.Wallet on e.event_id equals w.owner_id
+                            where w.owner_type == WalletOwnerTypes.Event
+                            && e.record_status == RecordStatuses.Live
+                            && w.record_status == RecordStatuses.Live
+                            && e.host_id == hostId
+                            && e.ref_id == refId
+                            select new EventInfo()
+                            {
+                                EventId = e.event_id,
+                                ReferenceId = e.ref_id,
+                                Title = e.title,
+                                Description = e.description,
+                                Status = e.status,
+                                StartDate = e.start_date,
+                                EventAddress = e.address,
+                                WalletAddress = w.address,
+                                WalletBalance = w.balance
+                            })
+                            .FirstOrDefault();
 
-                result = new Event()
-                {
-                    EventId = ConvertUtility.ToInt64(row["event_id"]),
-                    ReferenceId = ConvertUtility.ToString(row["ref_id"]),
-                    Title = ConvertUtility.ToString(row["title"]),
-                    Description = ConvertUtility.ToString(row["description"]),
-                    Status = ConvertUtility.ToString(row["status"]),
-                    StartDate = ConvertUtility.ToDateTime(row["start_date"]),
-                    EventAddress = ConvertUtility.ToString(row["event_address"]),
-                    WalletAddress = ConvertUtility.ToString(row["address"]),
-                    WalletBalance = ConvertUtility.ToInt64(row["balance"])
-                };
+                return data;
             }
-
-            return result;
         }
 
-        public List<EventTier> GetEventTiersByEventId(long eventId)
+        public List<EventTierInfo> GetEventTiersByEventId(long eventId)
         {
-            List<EventTier> result = null;
-            
-            string sql = @"SELECT tier_id, event_id, ref_id, title, description, total_tickets, available_tickets, price, status, address as tier_address
-                                FROM events_tier
-                                WHERE record_status=@recordStatus
-                                AND event_id=@eventId";
-
-            sql = sql
-                .Replace("@recordStatus", DataUtility.ToMySqlParam(RecordStatuses.Live))
-                .Replace("@eventId", DataUtility.ToMySqlParam(eventId));
-
-            DataTable dt = databaseAnno.ExecuteAsDataTable(sql);
-            if (DataUtility.HasRecord(dt))
+            using (var context = new AnnoDBContext())
             {
-                result = new List<EventTier>();
+                var data = (from t in context.EventsTier
+                            where t.record_status == RecordStatuses.Live
+                            && t.event_id == eventId
+                            select new EventTierInfo()
+                            {
+                                TierId = t.tier_id,
+                                EventId = t.event_id,
+                                ReferenceId = t.ref_id,
+                                Title = t.title,
+                                Description = t.description,
+                                TotalTickets = t.total_tickets,
+                                AvailableTickets = t.available_tickets,
+                                Price = t.price,
+                                Status = t.status
+                            })
+                            .ToList();
 
-                foreach (DataRow row in dt.Rows)
-                {
-                    result.Add(new EventTier()
-                    {
-                        TierId = ConvertUtility.ToInt64(row["tier_id"]),
-                        EventId = ConvertUtility.ToInt64(row["event_id"]),
-                        ReferenceId = ConvertUtility.ToString(row["ref_id"]),
-                        Title = ConvertUtility.ToString(row["title"]),
-                        Description = ConvertUtility.ToString(row["description"]),
-                        TotalTickets = ConvertUtility.ToInt32(row["total_tickets"]),
-                        AvailableTickets = ConvertUtility.ToInt32(row["available_tickets"]),
-                        Price = ConvertUtility.ToInt64(row["price"]),
-                        Status = ConvertUtility.ToString(row["status"]),
-                        TierAddress = ConvertUtility.ToString(row["tier_address"])
-                    });
-                }
+                return data;
             }
-
-            return result;
         }
 
-        public EventTier GetEventTiersByRef(long hostId, string refId)
+        public EventTierInfo GetEventTiersByRef(long hostId, string refId)
         {
-            EventTier result = null;
-
-            string sql = @"SELECT tier_id, event_id, ref_id, title, description, total_tickets, available_tickets, price, status
-                                FROM events_tier
-                                WHERE record_status=@recordStatus
-                                AND host_id=@hostId
-                                AND ref_id=@refId";
-
-            sql = sql
-                .Replace("@recordStatus", DataUtility.ToMySqlParam(RecordStatuses.Live))
-                .Replace("@hostId", DataUtility.ToMySqlParam(hostId))
-                .Replace("@refId", DataUtility.ToMySqlParam(refId));
-
-            DataTable dt = databaseAnno.ExecuteAsDataTable(sql);
-            if (DataUtility.HasRecord(dt))
+            using (var context = new AnnoDBContext())
             {
-                DataRow row = dt.Rows[0];
+                var data = (from t in context.EventsTier
+                            where t.record_status == RecordStatuses.Live
+                            && t.host_id == hostId
+                            && t.ref_id == refId
+                            select new EventTierInfo()
+                            {
+                                TierId = t.tier_id,
+                                EventId = t.event_id,
+                                ReferenceId = t.ref_id,
+                                Title = t.title,
+                                Description = t.description,
+                                TotalTickets = t.total_tickets,
+                                AvailableTickets = t.available_tickets,
+                                Price = t.price,
+                                Status = t.status
+                            })
+                            .FirstOrDefault();
 
-                result = new EventTier()
-                {
-                    TierId = ConvertUtility.ToInt64(row["tier_id"]),
-                    EventId = ConvertUtility.ToInt64(row["event_id"]),
-                    ReferenceId = ConvertUtility.ToString(row["ref_id"]),
-                    Title = ConvertUtility.ToString(row["title"]),
-                    Description = ConvertUtility.ToString(row["description"]),
-                    TotalTickets = ConvertUtility.ToInt32(row["total_tickets"]),
-                    AvailableTickets = ConvertUtility.ToInt32(row["available_tickets"]),
-                    Price = ConvertUtility.ToInt64(row["price"]),
-                    Status = ConvertUtility.ToString(row["status"])
-                };
+                return data;
             }
-
-            return result;
         }
 
         public CancelTicketResponse CancelTicket(long hostId, CancelTicketRequest value, out string status)

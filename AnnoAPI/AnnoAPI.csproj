@@ -44,6 +44,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
@@ -52,9 +58,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Lib\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="MySql.Data, Version=6.8.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Lib\MySql.Data.dll</HintPath>
+    <Reference Include="MySql.Data, Version=6.8.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.8.8\lib\net45\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data.Entity.EF6, Version=6.8.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.Entity.6.8.8\lib\net45\MySql.Data.Entity.EF6.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
@@ -93,8 +101,11 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="Lib\Microsoft.Web.Infrastructure.dll" />
-    <Content Include="Lib\MySql.Data.dll" />
     <Content Include="Lib\Newtonsoft.Json.dll" />
+    <Content Include="Schema\annodb.sql" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
@@ -105,17 +116,18 @@
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Core\Config.cs" />
     <Compile Include="Core\Contract\BlockchainContract.cs" />
-    <Compile Include="Core\Enum\ClaimEarningsStatuses.cs" />
-    <Compile Include="Core\Enum\CancelTicketStatuses.cs" />
-    <Compile Include="Core\Enum\TicketStatuses.cs" />
-    <Compile Include="Core\Enum\EventStatuses.cs" />
-    <Compile Include="Core\Enum\RecordStatuses.cs" />
-    <Compile Include="Core\Enum\WalletOwnerTypes.cs" />
-    <Compile Include="Core\Enum\CancelEventStatuses.cs" />
-    <Compile Include="Core\Enum\RedeemTicketStatuses.cs" />
-    <Compile Include="Core\Enum\BookEventStatuses.cs" />
-    <Compile Include="Core\Enum\ResponseMessages.cs" />
-    <Compile Include="Core\Enum\ResponseCodes.cs" />
+    <Compile Include="Core\Const\ClaimEarningsStatuses.cs" />
+    <Compile Include="Core\Const\CancelTicketStatuses.cs" />
+    <Compile Include="Core\Const\TicketStatuses.cs" />
+    <Compile Include="Core\Const\EventStatuses.cs" />
+    <Compile Include="Core\Const\RecordStatuses.cs" />
+    <Compile Include="Core\Const\WalletOwnerTypes.cs" />
+    <Compile Include="Core\Const\CancelEventStatuses.cs" />
+    <Compile Include="Core\Const\RedeemTicketStatuses.cs" />
+    <Compile Include="Core\Const\BookEventStatuses.cs" />
+    <Compile Include="Core\Const\ResponseMessages.cs" />
+    <Compile Include="Core\Const\ResponseCodes.cs" />
+    <Compile Include="Core\Extensions\DbContextExtensions.cs" />
     <Compile Include="Core\GenericResponse.cs" />
     <Compile Include="Core\Log.cs" />
     <Compile Include="Core\Services\AdmissionServices.cs" />
@@ -128,7 +140,6 @@
     <Compile Include="Core\Utility\ConvertUtility.cs" />
     <Compile Include="Core\Utility\Extension\CollectionsExtension.cs" />
     <Compile Include="Core\Utility\HashUtility.cs" />
-    <Compile Include="Core\Utility\MySqlUtility.cs" />
     <Compile Include="Core\Utility\DataUtility.cs" />
     <Compile Include="Core\Utility\DateTimeUtility.cs" />
     <Compile Include="Core\Utility\TextUtility.cs" />
@@ -137,46 +148,56 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\BookEventResponse.cs" />
-    <Compile Include="Models\CancelTicketRequest.cs" />
-    <Compile Include="Models\CancelTicketResponse.cs" />
-    <Compile Include="Models\ClaimEarningsResponse.cs" />
-    <Compile Include="Models\CreateCustomerResponse.cs" />
-    <Compile Include="Models\Host.cs" />
-    <Compile Include="Models\RedeemTicketResponse.cs" />
-    <Compile Include="Models\RedeemTicketRequest.cs" />
-    <Compile Include="Models\ClaimEarningsRequest.cs" />
+    <Compile Include="Models\CustomerInfo.cs" />
+    <Compile Include="Models\EventTierInfo.cs" />
+    <Compile Include="Models\Requests\BookEventResponse.cs" />
+    <Compile Include="Models\Requests\CancelTicketRequest.cs" />
+    <Compile Include="Models\Requests\CancelTicketResponse.cs" />
+    <Compile Include="Models\Requests\ClaimEarningsResponse.cs" />
+    <Compile Include="Models\Requests\CreateCustomerResponse.cs" />
+    <Compile Include="Models\Entities\Wallet.cs" />
+    <Compile Include="Models\Entities\Transaction.cs" />
+    <Compile Include="Models\Entities\Host.cs" />
+    <Compile Include="Models\Entities\EventsTier.cs" />
+    <Compile Include="Models\Entities\Events.cs" />
+    <Compile Include="Models\Entities\CustomerTicket.cs" />
+    <Compile Include="Models\Entities\CustomerBooking.cs" />
+    <Compile Include="Models\Entities\Customer.cs" />
+    <Compile Include="Models\Entities\ApiKey.cs" />
+    <Compile Include="Models\Entities\AnnoDBContext.cs" />
+    <Compile Include="Models\Entities\AnnoDBInitializer.cs" />
+    <Compile Include="Models\Requests\RedeemTicketResponse.cs" />
+    <Compile Include="Models\Requests\RedeemTicketRequest.cs" />
+    <Compile Include="Models\Requests\ClaimEarningsRequest.cs" />
     <Compile Include="Models\CreateEventTier.cs" />
-    <Compile Include="Models\GetTicketsResponse.cs" />
-    <Compile Include="Models\Ticket.cs" />
+    <Compile Include="Models\Requests\GetTicketsResponse.cs" />
+    <Compile Include="Models\TicketInfo.cs" />
     <Compile Include="Models\BookingDetails.cs" />
     <Compile Include="Models\BookingSummary.cs" />
-    <Compile Include="Models\CancelEventRequest.cs" />
+    <Compile Include="Models\Requests\CancelEventRequest.cs" />
     <Compile Include="Models\HostInfo.cs" />
-    <Compile Include="Models\HostInfoResponse.cs" />
-    <Compile Include="Models\BookEventRequest.cs" />
-    <Compile Include="Models\CreateHostRequest.cs" />
-    <Compile Include="Models\CreateHostResponse.cs" />
-    <Compile Include="Models\CreateEventsResponse.cs" />
-    <Compile Include="Models\CreateEventsRequest.cs" />
-    <Compile Include="Models\CreateCustomerRequest.cs" />
+    <Compile Include="Models\Requests\HostInfoResponse.cs" />
+    <Compile Include="Models\Requests\BookEventRequest.cs" />
+    <Compile Include="Models\Requests\CreateHostRequest.cs" />
+    <Compile Include="Models\Requests\CreateHostResponse.cs" />
+    <Compile Include="Models\Requests\CreateEventsResponse.cs" />
+    <Compile Include="Models\Requests\CreateEventsRequest.cs" />
+    <Compile Include="Models\Requests\CreateCustomerRequest.cs" />
     <Compile Include="Models\Booking.cs" />
-    <Compile Include="Models\Event.cs" />
-    <Compile Include="Models\EventsResponse.cs" />
-    <Compile Include="Models\EventTier.cs" />
-    <Compile Include="Models\EventsRequest.cs" />
-    <Compile Include="Models\GetBookingByConfirmationNoResponse.cs" />
-    <Compile Include="Models\GetBookingsByCustomerResponse.cs" />
-    <Compile Include="Models\GetBookingsSummaryResponse.cs" />
-    <Compile Include="Models\GetEventDetailsByRefResponse.cs" />
-    <Compile Include="Models\GetBookingsByEventResponse.cs" />
-    <Compile Include="Models\GetEventsResponse.cs" />
-    <Compile Include="Models\GetCustomerByRefResponse.cs" />
-    <Compile Include="Models\GetCustomersResponse.cs" />
-    <Compile Include="Models\RegisterUserResponse.cs" />
-    <Compile Include="Models\RegisterUserRequest.cs" />
-    <Compile Include="Models\UpdateEventStatusRequest.cs" />
-    <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\EventInfo.cs" />
+    <Compile Include="Models\Requests\EventsResponse.cs" />
+    <Compile Include="Models\Requests\EventsRequest.cs" />
+    <Compile Include="Models\Requests\GetBookingByConfirmationNoResponse.cs" />
+    <Compile Include="Models\Requests\GetBookingsByCustomerResponse.cs" />
+    <Compile Include="Models\Requests\GetBookingsSummaryResponse.cs" />
+    <Compile Include="Models\Requests\GetEventDetailsByRefResponse.cs" />
+    <Compile Include="Models\Requests\GetBookingsByEventResponse.cs" />
+    <Compile Include="Models\Requests\GetEventsResponse.cs" />
+    <Compile Include="Models\Requests\GetCustomerByRefResponse.cs" />
+    <Compile Include="Models\Requests\GetCustomersResponse.cs" />
+    <Compile Include="Models\Requests\RegisterUserResponse.cs" />
+    <Compile Include="Models\Requests\RegisterUserRequest.cs" />
+    <Compile Include="Models\Requests\UpdateEventStatusRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -191,13 +212,21 @@
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="package-lock.json" />
+    <Content Include="package.json" />
     <None Include="packages.config" />
-    <None Include="Web.config" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <Content Include="Web.config.live" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Logs\" />
-    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\neo-lux\neo-lux.csproj">
