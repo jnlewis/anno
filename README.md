@@ -14,7 +14,7 @@ In short, Anno provides an abstraction to the processes of ticket reservations a
 *	Ticket sales and reservations, payment transactions, ticket verification and redemption, cancellations and refunds, statistical data for reports and analytics.
 
 ## Technologies
-*	The API layer is developed in Microsoft ASP.NET Web API 2.
+*	The API is developed in Microsoft ASP.NET Web API 2 and Entity Framework 6.2.
 * The blockchain in use is NEO.
 
 ## Official Website & Live Product Preview
