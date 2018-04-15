@@ -1,5 +1,5 @@
 ﻿
-namespace AnnoAPI.Core
+namespace Anno.Api.Core
 {
     public class GenericResponse
     {

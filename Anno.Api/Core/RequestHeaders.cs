@@ -2,7 +2,7 @@
 using System.Configuration;
 using System.Web;
 
-namespace AnnoAPI.Core
+namespace Anno.Api.Core
 {
     public static class RequestHeaders
     {

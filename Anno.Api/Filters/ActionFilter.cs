@@ -2,9 +2,9 @@
 using System.Web.Http.Controllers;
 using System.Collections.Generic;
 using System.Linq;
-using AnnoAPI.Core;
+using Anno.Api.Core;
 
-namespace AnnoAPI.Filters
+namespace Anno.Api.Filters
 {
     public class ActionFilter : ActionFilterAttribute
     {

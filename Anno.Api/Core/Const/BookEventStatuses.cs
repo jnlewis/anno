@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace AnnoAPI.Core.Const
+namespace Anno.Api.Core.Const
 {
     public static class BookEventStatuses
     {

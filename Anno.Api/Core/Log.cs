@@ -1,7 +1,7 @@
 ﻿using NLog;
 using System;
 
-namespace AnnoAPI.Core
+namespace Anno.Api.Core
 {
     public static class Log
     {

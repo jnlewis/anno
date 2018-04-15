@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AnnoAPI.Models
+namespace Anno.Api.Models
 {
     public class EventTierInfo
     {

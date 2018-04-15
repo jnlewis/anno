@@ -1,4 +1,4 @@
-﻿using AnnoAPI.Core;
+﻿using Anno.Api.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Routing;
 
-namespace AnnoAPI
+namespace Anno.Api
 {
     public class WebApiApplication : System.Web.HttpApplication
     {
@@ -17,7 +17,7 @@ namespace AnnoAPI
             GlobalConfiguration.Configure(WebApiConfig.Register);
 
             //Add filter
-            GlobalConfiguration.Configuration.Filters.Add(new AnnoAPI.Filters.ActionFilter());
+            GlobalConfiguration.Configuration.Filters.Add(new Anno.Api.Filters.ActionFilter());
         }
         
         protected void Application_BeginRequest(object sender, EventArgs e)

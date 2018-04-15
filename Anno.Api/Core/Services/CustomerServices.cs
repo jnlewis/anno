@@ -1,14 +1,14 @@
 ﻿using Anno.Models.Entities;
-using AnnoAPI.Core.Const;
-using AnnoAPI.Core.Contract;
-using AnnoAPI.Core.Utility;
-using AnnoAPI.Models;
+using Anno.Api.Core.Const;
+using Anno.Api.Core.Contract;
+using Anno.Api.Core.Utility;
+using Anno.Api.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
-namespace AnnoAPI.Core.Services
+namespace Anno.Api.Core.Services
 {
     public class CustomerServices
     {

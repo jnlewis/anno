@@ -1,11 +1,11 @@
 ﻿using Anno.Models.Entities;
-using AnnoAPI.Core.Const;
-using AnnoAPI.Core.Utility;
+using Anno.Api.Core.Const;
+using Anno.Api.Core.Utility;
 using System;
 using System.Data;
 using System.Linq;
 
-namespace AnnoAPI.Core.Services
+namespace Anno.Api.Core.Services
 {
     public class IdentityServices
     {
