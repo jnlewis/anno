@@ -1,0 +1,280 @@
+﻿<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8079615A-CB29-4268-BEE5-A5DD6E7AB55F}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AnnoAPI</RootNamespace>
+    <AssemblyName>AnnoAPI</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Lib\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.8.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.8.8\lib\net45\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data.Entity.EF6, Version=6.8.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.Entity.6.8.8\lib\net45\MySql.Data.Entity.EF6.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Net.Http.Formatting">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Global.asax" />
+    <Content Include="Lib\Microsoft.Web.Infrastructure.dll" />
+    <Content Include="Lib\Newtonsoft.Json.dll" />
+    <Content Include="Schema\annodb.sql" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\HostController.cs" />
+    <Compile Include="Controllers\AppController.cs" />
+    <Compile Include="Controllers\BookingsController.cs" />
+    <Compile Include="Controllers\EventsController.cs" />
+    <Compile Include="Controllers\CustomerController.cs" />
+    <Compile Include="Core\Config.cs" />
+    <Compile Include="Core\Contract\BlockchainContract.cs" />
+    <Compile Include="Core\Const\ClaimEarningsStatuses.cs" />
+    <Compile Include="Core\Const\CancelTicketStatuses.cs" />
+    <Compile Include="Core\Const\TicketStatuses.cs" />
+    <Compile Include="Core\Const\EventStatuses.cs" />
+    <Compile Include="Core\Const\RecordStatuses.cs" />
+    <Compile Include="Core\Const\WalletOwnerTypes.cs" />
+    <Compile Include="Core\Const\CancelEventStatuses.cs" />
+    <Compile Include="Core\Const\RedeemTicketStatuses.cs" />
+    <Compile Include="Core\Const\BookEventStatuses.cs" />
+    <Compile Include="Core\Const\ResponseMessages.cs" />
+    <Compile Include="Core\Const\ResponseCodes.cs" />
+    <Compile Include="Core\Extensions\DbContextExtensions.cs" />
+    <Compile Include="Core\GenericResponse.cs" />
+    <Compile Include="Core\Log.cs" />
+    <Compile Include="Core\Services\AdmissionServices.cs" />
+    <Compile Include="Core\Services\IdentityServices.cs" />
+    <Compile Include="Core\Services\BookingServices.cs" />
+    <Compile Include="Core\Services\WalletServices.cs" />
+    <Compile Include="Core\Services\HostServices.cs" />
+    <Compile Include="Core\Services\EventsServices.cs" />
+    <Compile Include="Core\Services\CustomerServices.cs" />
+    <Compile Include="Core\Utility\ConvertUtility.cs" />
+    <Compile Include="Core\Utility\Extension\CollectionsExtension.cs" />
+    <Compile Include="Core\Utility\HashUtility.cs" />
+    <Compile Include="Core\Utility\DataUtility.cs" />
+    <Compile Include="Core\Utility\DateTimeUtility.cs" />
+    <Compile Include="Core\Utility\TextUtility.cs" />
+    <Compile Include="Core\RequestHeaders.cs" />
+    <Compile Include="Filters\ActionFilter.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CustomerInfo.cs" />
+    <Compile Include="Models\EventTierInfo.cs" />
+    <Compile Include="Models\Requests\BookEventResponse.cs" />
+    <Compile Include="Models\Requests\CancelTicketRequest.cs" />
+    <Compile Include="Models\Requests\CancelTicketResponse.cs" />
+    <Compile Include="Models\Requests\ClaimEarningsResponse.cs" />
+    <Compile Include="Models\Requests\CreateCustomerResponse.cs" />
+    <Compile Include="Models\Entities\Wallet.cs" />
+    <Compile Include="Models\Entities\Transaction.cs" />
+    <Compile Include="Models\Entities\Host.cs" />
+    <Compile Include="Models\Entities\EventsTier.cs" />
+    <Compile Include="Models\Entities\Events.cs" />
+    <Compile Include="Models\Entities\CustomerTicket.cs" />
+    <Compile Include="Models\Entities\CustomerBooking.cs" />
+    <Compile Include="Models\Entities\Customer.cs" />
+    <Compile Include="Models\Entities\ApiKey.cs" />
+    <Compile Include="Models\Entities\AnnoDBContext.cs" />
+    <Compile Include="Models\Entities\AnnoDBInitializer.cs" />
+    <Compile Include="Models\Requests\RedeemTicketResponse.cs" />
+    <Compile Include="Models\Requests\RedeemTicketRequest.cs" />
+    <Compile Include="Models\Requests\ClaimEarningsRequest.cs" />
+    <Compile Include="Models\CreateEventTier.cs" />
+    <Compile Include="Models\Requests\GetTicketsResponse.cs" />
+    <Compile Include="Models\TicketInfo.cs" />
+    <Compile Include="Models\BookingDetails.cs" />
+    <Compile Include="Models\BookingSummary.cs" />
+    <Compile Include="Models\Requests\CancelEventRequest.cs" />
+    <Compile Include="Models\HostInfo.cs" />
+    <Compile Include="Models\Requests\HostInfoResponse.cs" />
+    <Compile Include="Models\Requests\BookEventRequest.cs" />
+    <Compile Include="Models\Requests\CreateHostRequest.cs" />
+    <Compile Include="Models\Requests\CreateHostResponse.cs" />
+    <Compile Include="Models\Requests\CreateEventsResponse.cs" />
+    <Compile Include="Models\Requests\CreateEventsRequest.cs" />
+    <Compile Include="Models\Requests\CreateCustomerRequest.cs" />
+    <Compile Include="Models\Booking.cs" />
+    <Compile Include="Models\EventInfo.cs" />
+    <Compile Include="Models\Requests\EventsResponse.cs" />
+    <Compile Include="Models\Requests\EventsRequest.cs" />
+    <Compile Include="Models\Requests\GetBookingByConfirmationNoResponse.cs" />
+    <Compile Include="Models\Requests\GetBookingsByCustomerResponse.cs" />
+    <Compile Include="Models\Requests\GetBookingsSummaryResponse.cs" />
+    <Compile Include="Models\Requests\GetEventDetailsByRefResponse.cs" />
+    <Compile Include="Models\Requests\GetBookingsByEventResponse.cs" />
+    <Compile Include="Models\Requests\GetEventsResponse.cs" />
+    <Compile Include="Models\Requests\GetCustomerByRefResponse.cs" />
+    <Compile Include="Models\Requests\GetCustomersResponse.cs" />
+    <Compile Include="Models\Requests\RegisterUserResponse.cs" />
+    <Compile Include="Models\Requests\RegisterUserRequest.cs" />
+    <Compile Include="Models\Requests\UpdateEventStatusRequest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Config\ConnectionStrings.config" />
+    <Content Include="Config\AppSettings.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="NLog.config" />
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Logs\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\neo-lux\neo-lux.csproj">
+      <Project>{b3aaa0d3-304e-4408-a052-e3e8a8fa2006}</Project>
+      <Name>neo-lux</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>53671</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:53671/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+  </Target>
+  <Target Name="CopyRoslynFiles" AfterTargets="AfterBuild" Condition="!$(Disable_CopyWebApplication) And '$(OutDir)' != '$(OutputPath)'">
+    <ItemGroup>
+      <RoslynFiles Include="$(CscToolPath)\*" />
+    </ItemGroup>
+    <MakeDir Directories="$(WebProjectOutputDir)\bin\roslyn" />
+    <Copy SourceFiles="@(RoslynFiles)" DestinationFolder="$(WebProjectOutputDir)\bin\roslyn" SkipUnchangedFiles="true" Retries="$(CopyRetryCount)" RetryDelayMilliseconds="$(CopyRetryDelayMilliseconds)" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
