@@ -44,7 +44,7 @@ using System.Numerics;
 /// Source Codes & Documents: https://github.com/jnlewis/anno
 /// 
 /// </summary>
-namespace AnnoSmartContract
+namespace Anno.SmartContracts
 {
     public class AnnoContract : SmartContract
     {

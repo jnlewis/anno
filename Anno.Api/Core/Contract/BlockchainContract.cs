@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using AnnoAPI.Core.Utility;
+using Anno.Api.Core.Utility;
 using NeoLux;
 
-namespace AnnoAPI.Core.Contract
+namespace Anno.Api.Core.Contract
 {
     public class BlockchainContract
     {

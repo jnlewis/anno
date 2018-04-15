@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Configuration;
 
-namespace AnnoAPI.Core
+namespace Anno.Api.Core
 {
     public static class Config
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AnnoAPI.Models
+namespace Anno.Api.Models
 {
     public class GetBookingsByCustomerResponse
     {

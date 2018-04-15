@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Net.Http;
 using System.Web.Http;
-using AnnoAPI.Models;
-using AnnoAPI.Core.Services;
-using AnnoAPI.Core;
-using AnnoAPI.Core.Const;
+using Anno.Api.Models;
+using Anno.Api.Core.Services;
+using Anno.Api.Core;
+using Anno.Api.Core.Const;
 
-namespace AnnoAPI.Controllers
+namespace Anno.Api.Controllers
 {
     public class EventsController : ApiController
     {

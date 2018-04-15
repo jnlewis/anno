@@ -1,9 +1,9 @@
 ﻿using Anno.Models.Entities;
-using AnnoAPI.Core.Const;
+using Anno.Api.Core.Const;
 using System;
 using System.Linq;
 
-namespace AnnoAPI.Core.Services
+namespace Anno.Api.Core.Services
 {
     public class WalletServices
     {

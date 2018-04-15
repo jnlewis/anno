@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnnoAPI.Core.Utility.Extension
+namespace Anno.Api.Core.Utility.Extension
 {
     public static class CollectionsExtension
     {

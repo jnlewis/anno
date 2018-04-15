@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace AnnoAPI.Core.Utility
+namespace Anno.Api.Core.Utility
 {
     public static class HashUtility
     {

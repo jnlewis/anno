@@ -2,7 +2,7 @@
 using System.Data.Common;
 using System.Data.Entity;
 
-namespace AnnoAPI.Core.Extensions
+namespace Anno.Api.Core.Extensions
 {
     public static class DbContextExtensions
     {
