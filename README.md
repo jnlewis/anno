@@ -24,9 +24,6 @@ In short, Anno provides an abstraction to the processes of ticket reservations a
 ## API
 For the complete API documentation, please see <a href="https://documenter.getpostman.com/view/469639/anno-api/RVfyDW5V" target="_blank">Anno API Documentation</a>.
 
-## NEO City of Zion Contest:
-Please view the <a href="http://anno.network/docs/dapp-usage-guide.pdf" target="_blank">dApp Usage Guide</a> for smart contract invocation details.
-
 ## Why Use a Blockchain?
 The use of a blockchain enables direct payments from clients thus eliminating the need for a payment gateway, while also providing resilience to common failures found on centralized systems such as data loss or overselling. All bookings are safely recorded, and refunds are certain and processed with no delays. The blockchain can also prevent overselling, and with the availability of NEO global identity, can prevent tickets reselling where resellers buy a bulk of tickets (commonly in concerts) and resells for a higher price.
 
